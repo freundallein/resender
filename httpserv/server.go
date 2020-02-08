@@ -9,6 +9,7 @@ import (
 
 	"github.com/freundallein/resender/producers"
 	"github.com/freundallein/resender/uidgen"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -39,6 +40,7 @@ func New(options *Options) (*Server, error) {
 // Run - start server
 func (srv *Server) Run() error {
 	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
 	mux.HandleFunc("/", Index(srv.options))
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
