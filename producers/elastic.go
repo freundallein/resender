@@ -85,7 +85,7 @@ func (p *ElasticProducer) Produce(uid string, data []byte) {
 }
 
 func (p *ElasticProducer) createIndex() error {
-	log.Println(p.Name, "checking index existance:", p.Index)
+	log.Println(p.Name, "checking index existence:", p.Index)
 	res, err := p.cli.Indices.Create(p.Index)
 	if res != nil {
 		defer res.Body.Close()
@@ -97,10 +97,9 @@ func (p *ElasticProducer) createIndex() error {
 		var e map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			return err
-		} else {
-			if e["error"].(map[string]interface{})["type"] != "resource_already_exists_exception" {
-				return errors.New(e["error"].(map[string]interface{})["reason"].(string))
-			}
+		}
+		if e["error"].(map[string]interface{})["type"] != "resource_already_exists_exception" {
+			return errors.New(e["error"].(map[string]interface{})["reason"].(string))
 		}
 	}
 	return nil

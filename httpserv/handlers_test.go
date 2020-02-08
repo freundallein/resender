@@ -141,22 +141,3 @@ func TestIndexWithHttpProducer(t *testing.T) {
 		t.Error("Expected UNKNOWN got", receivedProbe.SSID)
 	}
 }
-
-// // Index - main http handler
-// func Index(options *Options) func(w http.ResponseWriter, r *http.Request) {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		for _, producer := range options.Producers {
-// 			go func(prd producers.Producer) {
-// 				if err := prd.Validate(pkg); err != nil {
-// 					log.Println(prd.GetName(), uid, err)
-// 					return
-// 				}
-// 				data, err := pkg.Bytes()
-// 				if err != nil {
-// 					log.Println("[data]", err)
-// 				}
-// 				prd.Produce(uid, data)
-// 			}(producer)
-// 		}
-// 	}
-// }

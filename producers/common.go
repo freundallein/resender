@@ -16,6 +16,7 @@ const (
 )
 
 var (
+	// ErrNoConnection - you should check connection to producer
 	ErrNoConnection = errors.New("no connection")
 )
 

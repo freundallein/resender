@@ -2,15 +2,10 @@ package producers
 
 import (
 	"bytes"
-	"errors"
 	"log"
 	"net/http"
 
 	"github.com/freundallein/resender/data"
-)
-
-var (
-	ErrInvalidPayload = errors.New("invalid payload")
 )
 
 // HttpProducer - send pacakges to external url

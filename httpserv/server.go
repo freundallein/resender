@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	// ErrNoOptions - you should provide Options
 	ErrNoOptions = errors.New("no options provided")
 )
 

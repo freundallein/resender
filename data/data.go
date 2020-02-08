@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	// Err... data errors
 	ErrNoProbeRequests = errors.New("no probe requests")
 	ErrInvalidApID     = errors.New("invalid ap_id")
 	ErrInvalidMAC      = errors.New("invalid mac")
