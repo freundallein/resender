@@ -1,6 +1,5 @@
 # resender
 [![Build Status](https://travis-ci.org/freundallein/resender.svg?branch=master)](https://travis-ci.org/freundallein/resender)
-[![Coverage Status](https://coveralls.io/repos/github/freundallein/resender/badge.svg?branch=master)](https://coveralls.io/github/freundallein/resender?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/freundallein/resender)](https://goreportcard.com/report/github.com/freundallein/resender)
 
 Receive json packages via http, validate data and produce it to:  
