@@ -173,6 +173,6 @@ content-Type: application/json
 ]
 }
 ```
-Service will valdiate incoming request, fill default values  and resend it to next services (http/Elastic/Kafka) is they are available.
+Service will valdiate incoming request, fill default values and resend it to next services (http/Elastic/Kafka) if they are available.
 ## Metrics
 Default prometheus metrics are available on `/metrics`  
