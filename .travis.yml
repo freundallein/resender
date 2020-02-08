@@ -1,0 +1,31 @@
+language: go
+go_import_path: github.com/freundallein/resender
+
+service:
+  - docker
+
+jobs:
+  include:
+    - stage: test
+      name: "Unit tests"
+      go: 1.13.x
+      script: 
+        - make test
+    - stage: coverage
+      name: "Coverage"
+      go: 1.13.x
+      before_install:
+        - go get github.com/mattn/goveralls
+      script: 
+        - $GOPATH/bin/goveralls -service=travis-ci
+  
+    - stage: build
+      name: "Distribute"
+      go: 1.13.x
+      if: branch = master
+      script: 
+        - make distribute
+
+notifications:
+  on_success: never
+  on_failure: never

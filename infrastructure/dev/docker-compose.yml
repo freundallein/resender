@@ -1,0 +1,112 @@
+version: "3.5"
+
+networks:
+  network:
+    name: network
+    driver: bridge
+
+volumes:
+  kafdata:
+    driver: local
+  esdata:
+    driver: local
+
+services:
+  loadbalancer:
+    image: freundallein/go-lb:latest
+    container_name: loadbalancer
+    restart: always
+    environment: 
+      - PORT=8000
+      - ADDRS=http://resender-one:8000,http://resender-two:8000
+      - STALE_TIMEOUT=60
+    networks: 
+      - network
+    ports:
+      - 8000:8000
+
+  resender-one:
+    image: freundallein/resender:latest
+    container_name: resender-one
+    restart: always
+    environment: 
+      - PORT=8000
+      - MACHINE_ID=1
+      - EXTERNAL_URL=http://192.168.52.138:8080/
+      - ELASTIC_URL=http://elastic:9200/
+      - KAFKA_URL=kafka:19092
+    depends_on: 
+      - kafka
+      - elastic
+    networks: 
+      - network
+    expose:
+      - 8000
+
+  resender-two:
+    image: freundallein/resender:latest
+    container_name: resender-two
+    restart: always
+    environment: 
+      - PORT=8000
+      - MACHINE_ID=2
+      - EXTERNAL_URL=http://192.168.52.138:8080/
+      - ELASTIC_URL=http://elastic:9200/
+      - KAFKA_URL=kafka:19092
+    depends_on: 
+      - kafka
+      - elastic
+    networks: 
+      - network
+    expose:
+      - 8000
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    container_name: elastic
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - network
+
+  zookeeper:
+    image: zookeeper:3.4.9
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+        ZOO_MY_ID: 1
+        ZOO_PORT: 2181
+        ZOO_SERVERS: server.1=zookeeper:2888:3888
+    networks:
+      - network
+    
+  kafka:
+    image: confluentinc/cp-kafka:5.3.1
+    container_name: kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - network
+    ports:
+      - 9092:9092
+    volumes:
+      - kafdata:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
