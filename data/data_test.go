@@ -27,3 +27,67 @@ func TestBytes(t *testing.T) {
 		}
 	}
 }
+
+func TestPatchFieldsEmpty(t *testing.T) {
+	observed := []*Probe{
+		&Probe{
+			MAC:       "1",
+			Timestamp: "2",
+			BSSID:     "",
+			SSID:      "",
+		},
+		&Probe{
+			MAC:       "1",
+			Timestamp: "2",
+			BSSID:     "",
+			SSID:      "",
+		},
+	}
+	p := &Package{
+		ApID: "123",
+		ProbeRequests: observed,
+	}
+	p.PatchFields()
+	expectedBSSID := "FF-FF-FF-FF-FF-FF"
+	expectedSSID := "UNKNOWN"
+	for i := range observed {
+		if observed[i].BSSID != expectedBSSID {
+			t.Error("Expected", expectedBSSID, "got", observed[i].BSSID)
+		}
+		if observed[i].SSID != expectedSSID {
+			t.Error("Expected", expectedSSID, "got", observed[i].SSID)
+		}
+	}
+}
+
+func TestPatchFieldsFilled(t *testing.T) {
+	observed := []*Probe{
+		&Probe{
+			MAC:       "1",
+			Timestamp: "2",
+			BSSID:     "3",
+			SSID:      "4",
+		},
+		&Probe{
+			MAC:       "1",
+			Timestamp: "2",
+			BSSID:     "3",
+			SSID:      "4",
+		},
+	}
+	p := &Package{
+		ApID: "123",
+		ProbeRequests: observed,
+	}
+	p.PatchFields()
+	expectedBSSID := "3"
+	expectedSSID := "4"
+	for i := range observed {
+		if observed[i].BSSID != expectedBSSID {
+			t.Error("Expected", expectedBSSID, "got", observed[i].BSSID)
+		}
+		if observed[i].SSID != expectedSSID {
+			t.Error("Expected", expectedSSID, "got", observed[i].SSID)
+		}
+	}
+}

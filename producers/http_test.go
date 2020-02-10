@@ -47,15 +47,6 @@ func TestValidate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	probe := pkg.ProbeRequests[0]
-	expectedBSSID := "FF-FF-FF-FF-FF-FF"
-	if probe.BSSID != expectedBSSID {
-		t.Error("Expected", expectedBSSID, "got", probe.BSSID)
-	}
-	expectedSSID := "UNKNOWN"
-	if probe.SSID != expectedSSID {
-		t.Error("Expected", expectedSSID, "got", probe.SSID)
-	}
 }
 func TestValidateEmpty(t *testing.T) {
 	observed := NewHttp("test/url")

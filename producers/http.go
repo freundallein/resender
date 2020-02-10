@@ -35,15 +35,6 @@ func (p *HttpProducer) Validate(pkg data.Package) error {
 	if pkg.ApID == "" {
 		return data.ErrInvalidApID
 	}
-	for _, probe := range pkg.ProbeRequests {
-		if probe.BSSID == "" {
-			probe.BSSID = "FF-FF-FF-FF-FF-FF"
-		}
-		if probe.SSID == "" {
-			probe.SSID = "UNKNOWN"
-		}
-
-	}
 	return nil
 }
 

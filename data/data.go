@@ -27,6 +27,18 @@ type Package struct {
 	ProbeRequests []*Probe `json:"probe_requests"`
 }
 
+// PatchFields - fill empty fields
+func (p *Package) PatchFields() {
+	for _, probe := range p.ProbeRequests {
+		if probe.BSSID == "" {
+			probe.BSSID = "FF-FF-FF-FF-FF-FF"
+		}
+		if probe.SSID == "" {
+			probe.SSID = "UNKNOWN"
+		}
+	}
+}
+
 // Bytes - json serializer
 func (p *Package) Bytes() ([]byte, error) {
 	return json.Marshal(p)

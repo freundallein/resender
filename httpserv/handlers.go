@@ -31,6 +31,7 @@ func Index(options *Options) func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		pkg.PatchFields()
 		uid := strconv.FormatUint(options.Gen.GetId(), 10)
 		log.Println("[server] Received", uid, pkg)
 		for _, producer := range options.Producers {
